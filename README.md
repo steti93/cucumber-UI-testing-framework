@@ -16,4 +16,4 @@ For jenkins configuration :
 
 To run UI tests:
 
-mvn clean install -Pui-tests -Dbrowser=firefox -Dspring.profiles.active=qa 
+mvn clean install -Pui-tests -Dbrowser=firefox -Dspring.profiles.active=demo
