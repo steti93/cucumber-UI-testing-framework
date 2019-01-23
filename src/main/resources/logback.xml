@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="TIME_BASED_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>target/logs/vtf.%d{yyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="RootSiftAppender" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>testname</key>
+            <defaultValue>runtime</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${testname}" class="ch.qos.logback.core.FileAppender">
+                <file>target/logs/${testname}.log</file>
+                <append>false</append>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg %n</pattern>
+                </layout>
+            </appender>
+        </sift>
+    </appender>
+
+    <!-- Send logs to both console and file audit -->
+    <logger name="org.springframework" level="ERROR">
+        <appender-ref ref="RootSiftAppender" />
+        <appender-ref ref="TIME_BASED_FILE" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="RootSiftAppender" />
+        <appender-ref ref="TIME_BASED_FILE" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
