@@ -10,7 +10,8 @@ public abstract class AbstractPageObject implements AbstractPage {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
-    public String getPageLink(){
+
+    public String getPageLink() {
         return null;
     }
 }

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
                 "com.steti.stepDef"},
         plugin = {
                 "json:target/cucumber.json",},
-        tags = {"~@ignore","@smoke_test"}
+        tags = {"~@ignore", "@smoke_test"}
 )
 public class RunSmokeVersion {
 }

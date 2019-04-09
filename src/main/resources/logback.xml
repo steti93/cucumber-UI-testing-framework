@@ -37,15 +37,15 @@
 
     <!-- Send logs to both console and file audit -->
     <logger name="org.springframework" level="ERROR">
-        <appender-ref ref="RootSiftAppender" />
-        <appender-ref ref="TIME_BASED_FILE" />
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="RootSiftAppender"/>
+        <appender-ref ref="TIME_BASED_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="RootSiftAppender" />
-        <appender-ref ref="TIME_BASED_FILE" />
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="RootSiftAppender"/>
+        <appender-ref ref="TIME_BASED_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

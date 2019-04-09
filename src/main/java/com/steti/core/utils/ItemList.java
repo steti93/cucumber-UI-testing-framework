@@ -17,14 +17,14 @@ public class ItemList {
 
     }
 
-    public ItemList(String fieldName, String fieldValue,String parentElement,String clickedElement) {
+    public ItemList(String fieldName, String fieldValue, String parentElement, String clickedElement) {
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
         this.parentElement = parentElement;
         this.clickedElement = clickedElement;
     }
 
-    public ItemList(String parentElement,String produceName,String producePrice){
+    public ItemList(String parentElement, String produceName, String producePrice) {
         this.parentElement = parentElement;
         this.produceName = produceName;
         this.producePrice = producePrice;

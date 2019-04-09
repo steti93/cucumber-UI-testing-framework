@@ -2,6 +2,7 @@ package com.steti.core.webdriverUtils;
 
 import com.steti.core.dataKeys.PageKeys;
 import com.steti.core.utils.ScenarioContext;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -32,25 +33,25 @@ public class WebDriverFactory {
     private static final Map<DriverType, Supplier<WebDriver>> driverMapLinux = new HashMap<>();
 
     private static final Supplier<WebDriver> chromeDriverSuplier = () -> {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
         return new ChromeDriver();
     };
 
     private static final Supplier<WebDriver> firefoxDriverSuplier = () -> {
-        System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+        WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         return new FirefoxDriver();
     };
 
     private static final Supplier<WebDriver> headLessChromeDriver = () -> {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         return new ChromeDriver(chromeOptions);
     };
 
     private static final Supplier<WebDriver> headLessFirefox = () -> {
-        System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+        WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
@@ -59,41 +60,41 @@ public class WebDriverFactory {
         return new FirefoxDriver(firefoxOptions);
     };
     private static final Supplier<WebDriver> internetExplorerDriver = () -> {
-        System.setProperty("webdriver.ie.driver", "src/main/resources/IEDriverServer.exe");
+        WebDriverManager.iedriver().setup();
         return new InternetExplorerDriver();
     };
 
     private static final Supplier<WebDriver> phantomJSDriverSupplier = () -> {
-        System.setProperty("phantomjs.binary.path", "src/main/resources/phantomjs.exe");
+        WebDriverManager.phantomjs().setup();
         return new PhantomJSDriver();
     };
 
     private static final Supplier<WebDriver> chromeDriverSuplierLinux = () -> {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriverlinux");
+        WebDriverManager.chromedriver().setup();
         return new ChromeDriver();
     };
 
     private static final Supplier<WebDriver> firefoxDriverSuplierLinux = () -> {
-        System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
+        WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         return new FirefoxDriver();
     };
 
     private static final Supplier<WebDriver> headLessChromeDriverLinux = () -> {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriverlinux");
+        WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         return new ChromeDriver(chromeOptions);
     };
 
     private static final Supplier<WebDriver> phantomJSDriverSupplierLinux = () -> {
-        System.setProperty("phantomjs.binary.path", "src/main/resources/phantomjs");
+        WebDriverManager.phantomjs().setup();
         return new PhantomJSDriver();
     };
 
 
     private static final Supplier<WebDriver> headLessFirefoxLinux = () -> {
-        System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
+        WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
@@ -163,14 +164,14 @@ public class WebDriverFactory {
         }
 
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        Dimension dimension = new Dimension(1500,1980);
+        Dimension dimension = new Dimension(1500, 1980);
         driver.manage().window().setSize(dimension);
         return driver;
     }
 
     public void closeDriver() {
         driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        driver.close();
+        driver.quit();
         driver = null;
     }
 }
