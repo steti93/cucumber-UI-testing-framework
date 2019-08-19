@@ -11,7 +11,6 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,11 +63,6 @@ public class WebDriverFactory {
         return new InternetExplorerDriver();
     };
 
-    private static final Supplier<WebDriver> phantomJSDriverSupplier = () -> {
-        WebDriverManager.phantomjs().setup();
-        return new PhantomJSDriver();
-    };
-
     private static final Supplier<WebDriver> chromeDriverSuplierLinux = () -> {
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver();
@@ -87,11 +81,6 @@ public class WebDriverFactory {
         return new ChromeDriver(chromeOptions);
     };
 
-    private static final Supplier<WebDriver> phantomJSDriverSupplierLinux = () -> {
-        WebDriverManager.phantomjs().setup();
-        return new PhantomJSDriver();
-    };
-
 
     private static final Supplier<WebDriver> headLessFirefoxLinux = () -> {
         WebDriverManager.firefoxdriver().setup();
@@ -108,12 +97,10 @@ public class WebDriverFactory {
         driverMap.put(DriverType.FIREFOX, firefoxDriverSuplier);
         driverMap.put(DriverType.CHHEADLESS, headLessChromeDriver);
         driverMap.put(DriverType.IE, internetExplorerDriver);
-        driverMap.put(DriverType.PHANTOM, phantomJSDriverSupplier);
         driverMap.put(DriverType.FXHEADLESS, headLessFirefox);
         driverMapLinux.put(DriverType.CHROME, chromeDriverSuplierLinux);
         driverMapLinux.put(DriverType.FIREFOX, firefoxDriverSuplierLinux);
         driverMapLinux.put(DriverType.CHHEADLESS, headLessChromeDriverLinux);
-        driverMapLinux.put(DriverType.PHANTOM, phantomJSDriverSupplierLinux);
         driverMapLinux.put(DriverType.FXHEADLESS, headLessFirefoxLinux);
     }
 
@@ -165,7 +152,7 @@ public class WebDriverFactory {
 
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         Dimension dimension = new Dimension(1500, 1980);
-        driver.manage().window().setSize(dimension);
+        driver.manage().window().maximize();
         return driver;
     }
 
