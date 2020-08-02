@@ -1,4 +1,4 @@
 package com.steti.core.dataKeys;
 
-public interface Keys {
+public interface ScenarioKeys {
 }

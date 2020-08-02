@@ -1,12 +1,12 @@
 package com.steti.core.dataKeys;
 
-public enum RestKeys implements Keys {
+public enum RestScenarioKeys implements ScenarioKeys {
 
     REQUEST("Base request for test");
 
     private String description;
 
-    RestKeys(String description) {
+    RestScenarioKeys(String description) {
         this.description = description;
     }
 

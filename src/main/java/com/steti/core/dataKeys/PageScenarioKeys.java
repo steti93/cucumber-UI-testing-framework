@@ -1,6 +1,6 @@
 package com.steti.core.dataKeys;
 
-public enum PageKeys implements Keys {
+public enum PageScenarioKeys implements ScenarioKeys {
     OPEN_DRIVER("Open Driver"),
     CURRENT_PAGE("Saving current page Object"),
     TEST_EMAIL("Saving test email of new user"),
@@ -12,7 +12,7 @@ public enum PageKeys implements Keys {
 
     private String description;
 
-    PageKeys(String description) {
+    PageScenarioKeys(String description) {
         this.description = description;
     }
 

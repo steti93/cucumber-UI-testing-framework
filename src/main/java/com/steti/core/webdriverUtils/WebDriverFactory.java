@@ -1,6 +1,6 @@
 package com.steti.core.webdriverUtils;
 
-import com.steti.core.dataKeys.PageKeys;
+import com.steti.core.dataKeys.PageScenarioKeys;
 import com.steti.core.utils.ScenarioContext;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Dimension;
@@ -157,7 +157,7 @@ public class WebDriverFactory {
     }
 
     public void closeDriver() {
-        driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
+        driver = scenarioContext.getData(PageScenarioKeys.OPEN_DRIVER);
         driver.quit();
         driver = null;
     }

@@ -2,7 +2,7 @@ package com.steti.hooks;
 
 
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
-import com.steti.core.dataKeys.PageKeys;
+import com.steti.core.dataKeys.PageScenarioKeys;
 import com.steti.core.logger.TestLogHelper;
 import com.steti.core.utils.ScenarioContext;
 import com.steti.core.webdriverUtils.WebDriverFactory;
@@ -68,8 +68,8 @@ public class GlobalStepHooks extends AbstractSpringTest {
     public void setUpDriver(Scenario scenario) {
         logger.info("[" + TestLogHelper.getCurrentLogName() + " ]: - " + "Opening Web driver");
         driver = webDriverFactory.setUp();
-        scenarioContext.save(PageKeys.OPEN_DRIVER, driver);
-        scenarioContext.save(PageKeys.SCENARIO_NAME, scenario.getName());
+        scenarioContext.save(PageScenarioKeys.OPEN_DRIVER, driver);
+        scenarioContext.save(PageScenarioKeys.SCENARIO_NAME, scenario.getName());
     }
 
 

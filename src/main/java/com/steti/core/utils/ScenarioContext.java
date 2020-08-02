@@ -1,6 +1,6 @@
 package com.steti.core.utils;
 
-import com.steti.core.dataKeys.Keys;
+import com.steti.core.dataKeys.ScenarioKeys;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -9,13 +9,13 @@ import java.util.Map;
 @Component
 public class ScenarioContext {
 
-    private static final Map<Keys, Object> data = new HashMap<>();
+    private static final Map<ScenarioKeys, Object> data = new HashMap<>();
 
-    public void save(Keys keys, Object value) {
-        data.put(keys, value);
+    public void save(ScenarioKeys scenarioKeys, Object value) {
+        data.put(scenarioKeys, value);
     }
 
-    public Object getData(Keys keys) {
-        return data.get(keys);
+    public <T> T getData(ScenarioKeys scenarioKeys) {
+        return (T) data.get(scenarioKeys);
     }
 }
