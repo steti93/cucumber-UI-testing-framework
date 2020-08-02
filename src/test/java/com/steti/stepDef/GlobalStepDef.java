@@ -12,7 +12,6 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.hamcrest.Matchers;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
@@ -20,20 +19,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.awt.*;
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.steti.core.assertions.STAssertions.*;
+import static com.steti.core.assertions.STAssertions.assertFalse;
+import static com.steti.core.assertions.STAssertions.assertTrue;
 import static com.steti.hooks.GlobalStepHooks.SCREENSHOT_PATH;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
-import static org.testng.Assert.assertEquals;
 
 public class GlobalStepDef {
 
@@ -231,14 +227,6 @@ public class GlobalStepDef {
         }
     }
 
-
-    @Then("^order number is saved$")
-    public void orderNumberIsSaved() {
-        AbstractPage currentPage = (AbstractPage) scenarioContext.getData(PageKeys.CURRENT_PAGE);
-        WebElement orderNumber = getWebElementByObjectAndName(currentPage, "orderNumber");
-        scenarioContext.save(PageKeys.ORDER_NUMBER, orderNumber.getText());
-    }
-
     @When("^user inserts an existing email$")
     public void userInsertsAnExistingEmail() {
         String usedEmail = (String) scenarioContext.getData(PageKeys.TEST_EMAIL);
@@ -306,50 +294,6 @@ public class GlobalStepDef {
 
     }
 
-    @When("^user selects random university for input '(.*)'$")
-    public void userSelectsRandomUniversityFromFreeTrialPage(String elementName, List<ItemList> items) throws InterruptedException, AWTException {
-        ItemList itemList = items.get(0);
-        String xpathForElement = itemList.getParentElement();
-
-        List<String> universitiesName = new ArrayList<>();
-
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        AbstractPage currentPage = (AbstractPage) scenarioContext.getData(PageKeys.CURRENT_PAGE);
-
-        WebElement webElement = getWebElementByObjectAndName(currentPage, elementName);
-        webElement.click();
-
-        List<WebElement> webElements = driver.findElements(By.xpath(xpathForElement));
-
-        for (WebElement element : webElements) {
-            String value = getTextOfInvisibleElement(driver, element);
-            universitiesName.add(value);
-        }
-
-        Random random = new Random();
-        int randomValue = random.nextInt(universitiesName.size());
-        String currentSelectedCollegeName = universitiesName.get(randomValue);
-        scenarioContext.save(PageKeys.UNIVERSITY_NAME, currentSelectedCollegeName);
-        webElement.sendKeys(currentSelectedCollegeName);
-
-        WebElement clickedElement = driver.findElement(By.xpath(itemList.getClickedElement()));
-        Thread.sleep(2000);
-        Actions actions = new Actions(driver);
-        actions.moveToElement(clickedElement).click(clickedElement).build().perform();
-
-    }
-
-    @When("^user saved values from page$")
-    public void userSavedValuesFromPage(List<ItemList> itemLists) {
-        ItemList itemList = itemLists.get(0);
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        WebElement produceNameValue = driver.findElement(By.xpath(itemList.getProduceName()));
-        WebElement priceNameValue = driver.findElement(By.xpath(itemList.getProducePrice()));
-
-        scenarioContext.save(PageKeys.PRICE_FROM_ELEMENT, priceNameValue.getText());
-        scenarioContext.save(PageKeys.PRODUCT_NAME_FROM_ELEMENT, produceNameValue.getText());
-
-    }
 
     @Then("^user opens page '(.*)'$")
     public void userOpensPage(PageNames pageName) throws Exception {
@@ -357,20 +301,6 @@ public class GlobalStepDef {
         AbstractPageObject abstractPage = getPageObjectByPageName(pageName, driver);
         String currentPageLink = abstractPage.getPageLink();
         driver.navigate().to(baseUrl.concat("/").concat(currentPageLink));
-    }
-
-    @Then("^item price is same as on previous page$")
-    public void itemPriceIsSameAsOnCatalogPage(List<ItemList> itemLists) {
-        ItemList itemList = itemLists.get(0);
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        WebElement priceNameValue = driver.findElement(By.xpath(itemList.getProducePrice()));
-        String basketPagePrice = priceNameValue.getText().replaceAll("[^0-9.]", "");
-        String expectedPrice = scenarioContext.getData(PageKeys.PRICE_FROM_ELEMENT).toString().replaceAll("[^0-9.]", "");
-        double doubleBasketPrice = Double.parseDouble(basketPagePrice);
-        double doubleExpectedPrice = Double.parseDouble(expectedPrice);
-        assertEquals(doubleBasketPrice, doubleExpectedPrice);
-        assertThat("Price is not equals", doubleExpectedPrice, Matchers.is(doubleBasketPrice));
-
     }
 
     @When("^user see the '(.*)' web element$")
@@ -404,22 +334,6 @@ public class GlobalStepDef {
 
     }
 
-    @Then("^page contains university name$")
-    public void pageContainsUniversityName() {
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        String universityName = (String) scenarioContext.getData(PageKeys.UNIVERSITY_NAME);
-        assertTrue("Page contains university name:", driver.getPageSource().contains(universityName));
-    }
-
-    @When("^user saved price from search result section$")
-    public void userSavedValueFromPage(List<ItemList> itemLists) {
-        ItemList itemList = itemLists.get(0);
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        WebElement priceNameValue = driver.findElement(By.xpath(itemList.getProducePrice()));
-        scenarioContext.save(PageKeys.PRICE_FROM_ELEMENT, priceNameValue.getText());
-
-    }
-
     @When("^user tap '(.*)' button$")
     public void userTapOnButton(Keys keyName) {
         WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
@@ -433,28 +347,6 @@ public class GlobalStepDef {
         WebElement element = getWebElementByObjectAndName(currentPage, elementName);
         String attributeValue = element.getAttribute("type");
         assertTrue("Type for element is not equals", attributeValue.equals(typeName));
-    }
-
-    @Then("^total cost is correctly calculated$")
-    public void totalCostIsCorrectlyCalculated(List<ItemList> itemLists) {
-        ItemList itemList = itemLists.get(0);
-        int membershipPrice = 99;
-        int typicalFee = 59;
-        String monthNumbers = itemList.getProducePrice();
-        String coursesNumbers = itemList.getFieldValue();
-        double expectedMonthCost = Integer.parseInt(monthNumbers) * membershipPrice;
-        double expectedCourseCost = Integer.parseInt(coursesNumbers) * typicalFee;
-        double expectedTotalCost = expectedMonthCost + expectedCourseCost;
-        double expectedAveragePerCourse = expectedTotalCost / Integer.parseInt(coursesNumbers);
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        String monthCostString = driver.findElement(By.id("month_view")).getAttribute("value").replaceAll("[^0-9.]", "");
-        String courseCostString = driver.findElement(By.id("course_view")).getAttribute("value").replaceAll("[^0-9.]", "");
-        String totalCostString = driver.findElement(By.id("total_view")).getAttribute("value").replaceAll("[^0-9.]", "");
-        String expectedAveragePerCourseString = driver.findElement(By.id("average_view")).getAttribute("value").replaceAll("[^0-9.]", "");
-        assertThat("Value is not corresponding", expectedMonthCost, Matchers.is(Double.parseDouble(monthCostString)));
-        assertThat("Value is not corresponding", expectedCourseCost, Matchers.is(Double.parseDouble(courseCostString)));
-        assertThat("Value is not corresponding", expectedTotalCost, Matchers.is(Double.parseDouble(totalCostString)));
-        assertThat("Value is not corresponding", expectedAveragePerCourse, Matchers.is(Double.parseDouble(expectedAveragePerCourseString)));
     }
 
     @When("^new page is opened in new tab$")
@@ -471,22 +363,6 @@ public class GlobalStepDef {
     public void userRefreshThePage() {
         WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         driver.navigate().refresh();
-    }
-
-    @When("^titleName is same as user used before submit the form$")
-    public void titlenameIsSameAsUserUsedBeforeSubmitTheForm() {
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        WebElement realTitle = driver.findElement(By.xpath("//tbody/tr[1]/td[3]"));
-        String expectedTitle = (String) scenarioContext.getData(PageKeys.TEST_EMAIL);
-        assertTrue("Support Request was not registered, the title is missed", realTitle.getText().equals(expectedTitle));
-    }
-
-    @Then("^user selects a file for uploading$")
-    public void userUploadTheFile() {
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        File file = new File("src/test/resources/testresources/test_upload_file.jpg");
-        driver.findElement(By.id("filename")).sendKeys(file.getAbsolutePath());
-
     }
 
 
@@ -508,14 +384,6 @@ public class GlobalStepDef {
         options.stream().filter(r -> r.getText().contains(randomValue)).findFirst().get().click();
         valuesToSave.add(randomValue);
         scenarioContext.save(PageKeys.LIST_RANDOM_VALUES, valuesToSave);
-    }
-
-    @When("^university input '(.*)' is cleaned$")
-    public void universityInputIsCleaned(String elementPath) {
-        WebDriver driver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        WebElement element = driver.findElement(By.xpath(elementPath));
-        element.click();
-        userTapOnButton(Keys.BACK_SPACE);
     }
 
     @Then("^where is an error in console$")
