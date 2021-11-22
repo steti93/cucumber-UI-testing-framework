@@ -12,43 +12,31 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-@Component
 public class WebDriverFactory {
 
-    @Autowired
-    private ScenarioContext scenarioContext;
-
-    protected static WebDriver driver;
-
     private static final Map<DriverType, Supplier<WebDriver>> driverMap = new HashMap<>();
-
     private static final Map<DriverType, Supplier<WebDriver>> driverMapLinux = new HashMap<>();
-
     private static final Supplier<WebDriver> chromeDriverSuplier = () -> {
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver();
     };
-
     private static final Supplier<WebDriver> firefoxDriverSuplier = () -> {
         WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         return new FirefoxDriver();
     };
-
     private static final Supplier<WebDriver> headLessChromeDriver = () -> {
         WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         return new ChromeDriver(chromeOptions);
     };
-
     private static final Supplier<WebDriver> headLessFirefox = () -> {
         WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
@@ -62,26 +50,21 @@ public class WebDriverFactory {
         WebDriverManager.iedriver().setup();
         return new InternetExplorerDriver();
     };
-
     private static final Supplier<WebDriver> chromeDriverSuplierLinux = () -> {
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver();
     };
-
     private static final Supplier<WebDriver> firefoxDriverSuplierLinux = () -> {
         WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         return new FirefoxDriver();
     };
-
     private static final Supplier<WebDriver> headLessChromeDriverLinux = () -> {
         WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");
         return new ChromeDriver(chromeOptions);
     };
-
-
     private static final Supplier<WebDriver> headLessFirefoxLinux = () -> {
         WebDriverManager.firefoxdriver().setup();
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
@@ -91,6 +74,7 @@ public class WebDriverFactory {
         firefoxOptions.setBinary(firefoxBinary);
         return new FirefoxDriver(firefoxOptions);
     };
+    protected static WebDriver driver;
 
     static {
         driverMap.put(DriverType.CHROME, chromeDriverSuplier);
@@ -103,6 +87,9 @@ public class WebDriverFactory {
         driverMapLinux.put(DriverType.CHHEADLESS, headLessChromeDriverLinux);
         driverMapLinux.put(DriverType.FXHEADLESS, headLessFirefoxLinux);
     }
+
+    @Autowired
+    private ScenarioContext scenarioContext;
 
     private static WebDriver getDriverManager(DriverType driverType) {
         return driverMap.get(driverType).get();

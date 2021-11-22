@@ -26,10 +26,8 @@ import java.util.Properties;
 
 public class GlobalStepHooks extends AbstractSpringTest {
 
-    private static Logger logger = LoggerFactory.getLogger(GlobalStepHooks.class);
-
     public static final String SCREENSHOT_PATH = "target/logs/screenshots/";
-
+    private static Logger logger = LoggerFactory.getLogger(GlobalStepHooks.class);
     private WebDriver driver;
 
     @Autowired
@@ -38,10 +36,22 @@ public class GlobalStepHooks extends AbstractSpringTest {
     @Autowired
     private WebDriverFactory webDriverFactory;
 
+    public static void setPropertiesForQmetry(String propertyName, String propertyValue) throws IOException {
+        FileInputStream in = new FileInputStream("qmetry.properties");
+        Properties props = new Properties();
+        props.load(in);
+        in.close();
+
+        FileOutputStream out = new FileOutputStream("qmetry.properties");
+        props.setProperty(propertyName, propertyValue);
+        props.store(out, null);
+        out.close();
+    }
+
     @Before(order = -3)
     public void loggerConfiguration(Scenario scenario) {
         String scenarioNameFinal = scenario.getName().replaceAll("\\s+", "-");
-        scenarioNameFinal = scenarioNameFinal.concat("-" + String.valueOf(LocalTime.now().toSecondOfDay()));
+        scenarioNameFinal = scenarioNameFinal.concat("-" + LocalTime.now().toSecondOfDay());
         TestLogHelper.startTestLogging(scenarioNameFinal);
         logger.info("Current testname value is : " + TestLogHelper.getCurrentLogName());
     }
@@ -72,7 +82,6 @@ public class GlobalStepHooks extends AbstractSpringTest {
         scenarioContext.save(PageScenarioKeys.SCENARIO_NAME, scenario.getName());
     }
 
-
     @After(value = "@UI")
     public void closeDriver(Scenario scenario) throws IOException {
         if (scenario.isFailed()) {
@@ -86,18 +95,6 @@ public class GlobalStepHooks extends AbstractSpringTest {
         }
         logger.info("[" + TestLogHelper.getCurrentLogName() + " ]: - " + "Closing Web driver...");
         webDriverFactory.closeDriver();
-    }
-
-    public static void setPropertiesForQmetry(String propertyName, String propertyValue) throws IOException {
-        FileInputStream in = new FileInputStream("qmetry.properties");
-        Properties props = new Properties();
-        props.load(in);
-        in.close();
-
-        FileOutputStream out = new FileOutputStream("qmetry.properties");
-        props.setProperty(propertyName, propertyValue);
-        props.store(out, null);
-        out.close();
     }
 
 }
